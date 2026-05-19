@@ -1,6 +1,6 @@
-#include "dolphinpastefixerplugin.h"
+#include "dolphin_paste_fixer_plugin.h"
 
-#include "dolphinpopupobserver.h"
+#include "dolphin_popup_observer.h"
 
 DolphinPasteFixerPlugin::DolphinPasteFixerPlugin()
     : m_observer(std::make_unique<DolphinPopupObserver>())

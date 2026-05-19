@@ -1,4 +1,4 @@
-#include "dolphinpopupobserver.h"
+#include "dolphin_popup_observer.h"
 
 #include <kwin/wayland/seat.h>
 #include <kwin/wayland_server.h>

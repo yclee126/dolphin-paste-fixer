@@ -1,6 +1,6 @@
 set(dolphinpastefixer_SRCS
-    dolphinpastefixerplugin.cpp
-    dolphinpopupobserver.cpp
+    dolphin_paste_fixer_plugin.cpp
+    dolphin_popup_observer.cpp
 )
 
 add_library(dolphinpastefixer MODULE ${dolphinpastefixer_SRCS})
