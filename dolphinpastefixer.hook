@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = kwin
+
+[Action]
+Description = Rebuilding dolphin-paste-fixer after KWin upgrade...
+When = PostTransaction
+Exec = /usr/local/lib/dolphinpastefixer/rebuild.sh

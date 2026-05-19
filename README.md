@@ -4,7 +4,7 @@ A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes clipboard paste in
 
 ## The problem
 
-When a popup opens inside Dolphin (such as the new folder dialog) Ctrl+V fails to paste until you copy something again. Dolphin holds a stale `wl_data_offer` at the point the popup takes keyboard focus, so the clipboard appears empty to the popup.
+When a popup opens inside Dolphin (such as the new folder dialog), Ctrl+V fails to paste even though you copied something beforehand. To paste, you have to copy the content again. This is a Dolphin bug where it loses track of the clipboard when a popup opens.
 
 Related bug tickets:
 
@@ -21,30 +21,59 @@ This plugin detects new Dolphin popup by watching the Wayland seat for keyboard 
 - KDE Plasma 6 on Wayland
 - KWin 6.x (shipped with Plasma 6)
 
+## Tested on
+
+| Distribution | KWin | Dolphin |
+|---|---|---|
+| Arch Linux | 6.6.5 | 25.12.3 |
+| KDE neon 260514 | 6.6.5 | 26.04.1 |
+| Kubuntu 26.04 LTS | 6.6.4 | 25.12.3 |
+
+To check your KWin version: `kwin_wayland --version`
+
 ## Installation
 
 ### 1. Install build dependencies
 
 | Distribution | Command |
 |---|---|
-| **Arch Linux** | `sudo pacman -S cmake extra-cmake-modules qt6-base kwin kconfig kwindowsystem` |
-| **Debian (Ubuntu)** | `sudo apt install build-essential cmake extra-cmake-modules kwin-dev libkf6config-dev libkf6windowsystem-dev qt6-base-dev` |
-| **Fedora** | `sudo dnf install gcc-c++ cmake extra-cmake-modules kwin-devel kf6-kconfig-devel kf6-kwindowsystem-devel qt6-qtbase-devel` |
-| **openSUSE** | `sudo zypper install gcc-c++ cmake extra-cmake-modules kwin6-devel kf6-kconfig-devel kf6-kwindowsystem-devel qt6-base-devel` |
+| **Arch Linux** | `sudo pacman -S base-devel cmake pkgconf extra-cmake-modules qt6-base kwin kconfig kwindowsystem` |
+| **Debian (Ubuntu)** | `sudo apt install build-essential cmake pkg-config extra-cmake-modules kwin-dev libkf6config-dev libkf6windowsystem-dev qt6-base-dev` |
+| **Fedora** | `sudo dnf install gcc-c++ cmake pkgconf extra-cmake-modules kwin-devel kf6-kconfig-devel kf6-kwindowsystem-devel qt6-qtbase-devel` |
+| **openSUSE** | `sudo zypper install gcc-c++ cmake pkgconf extra-cmake-modules kwin6-devel kf6-kconfig-devel kf6-kwindowsystem-devel qt6-base-devel` |
 
 ### 2. Build and install
 
 ```bash
 git clone https://github.com/yclee126/dolphin-paste-fixer
 cd dolphin-paste-fixer
+```
+
+**Arch Linux** — use the Arch installer, which also sets up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Clone the repo to a permanent location before running it, as the hook needs to find the source directory on every KWin upgrade:
+
+```bash
+./install-arch.sh
+```
+
+**Other distros** — one-time install:
+
+```bash
 ./install.sh
 ```
 
 Then log out and log back in.
 
-> **Note:** On stable distros (e.g. Ubuntu, Fedora) this is a one-time step. On rolling-release distros (e.g. Arch) the plugin must be rebuilt after every KWin upgrade. See [After KWin upgrades](#after-kwin-upgrades).
+> **Note:** On stable distros (e.g. Ubuntu, Fedora) the install is a one-time step. On Arch the pacman hook handles rebuilds automatically. See [After KWin upgrades](#after-kwin-upgrades).
 
 ## Uninstalling
+
+**Arch Linux:**
+
+```bash
+./uninstall-arch.sh
+```
+
+**Other distros:**
 
 ```bash
 ./uninstall.sh
@@ -75,7 +104,11 @@ Run `./toggle-debug.sh` again to turn logging off.
 
 ## After KWin upgrades
 
-KWin requires all plugins to embed its minor version in their plugin ID (e.g. `org.kde.kwin.PluginFactoryInterface6.6.4`). This is enforced by KWin itself - it uses private, unstable headers that can change between minor versions, so without any safeguards it could cause a system crash. Rebuild and reinstall it by simply running the same `install.sh` file.
+KWin requires all plugins to embed its minor version in their plugin ID (e.g. `org.kde.kwin.PluginFactoryInterface6.6.4`). This is enforced by KWin itself — it uses private, unstable headers that can change between minor versions, so without any safeguards it could cause a system crash.
+
+**Arch Linux:** the pacman hook installed by `install-arch.sh` rebuilds and reinstalls the plugin automatically as part of every `pacman -Syu` that upgrades KWin. No manual step needed; just log out and back in afterward.
+
+**Other distros:** rebuild and reinstall manually by running `./install.sh` again, then log out and back in.
 
 ## How it works
 
