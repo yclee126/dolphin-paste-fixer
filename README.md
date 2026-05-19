@@ -63,8 +63,6 @@ cd dolphin-paste-fixer
 
 Then log out and log back in.
 
-> **Note:** On stable distros (e.g. Ubuntu, Fedora) the install is a one-time step. On Arch the pacman hook handles rebuilds automatically. See [After KWin upgrades](#after-kwin-upgrades).
-
 ## Uninstalling
 
 **Arch Linux:**
