@@ -1,6 +1,6 @@
 # dolphin-paste-fixer
 
-A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes clipboard paste in Dolphin popups.
+A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes clipboard paste in Dolphin popups. It runs entirely inside KWin as a single shared library so it's very lightweight.
 
 ## The problem
 
@@ -8,7 +8,7 @@ When a popup opens inside Dolphin (such as the new folder dialog), Ctrl+V always
 
 Related bug tickets:
 
-- Can't paste text to the new folder dialog [#516263](https://bugs.kde.org/show_bug.cgi?id=516263)
+- Can't paste text to the new folder dialog [#516263](https://bugs.kde.org/show_bug.cgi?id=516263) [#517780](https://bugs.kde.org/show_bug.cgi?id=517780)
 - Can't paste text to the new file dialog [#519034](https://bugs.kde.org/show_bug.cgi?id=519034)
 - Can't paste files after creating a new folder in another window [#519770](https://bugs.kde.org/show_bug.cgi?id=519770)
 
@@ -37,7 +37,7 @@ To check your KWin version: `kwin_wayland --version`
 
 | Distribution | Command |
 |---|---|
-| **Arch Linux** | `sudo pacman -S base-devel cmake pkgconf extra-cmake-modules qt6-base kwin kconfig kwindowsystem` |
+| **Arch Linux (CachyOS)** | `sudo pacman -S base-devel cmake pkgconf extra-cmake-modules qt6-base kwin kconfig kwindowsystem` |
 | **Debian (Ubuntu)** | `sudo apt install build-essential cmake pkg-config extra-cmake-modules kwin-dev libkf6config-dev libkf6windowsystem-dev qt6-base-dev` |
 | **Fedora** | `sudo dnf install gcc-c++ cmake pkgconf extra-cmake-modules kwin-devel kf6-kconfig-devel kf6-kwindowsystem-devel qt6-qtbase-devel` |
 | **openSUSE** | `sudo zypper install gcc-c++ cmake pkgconf extra-cmake-modules kwin6-devel kf6-kconfig-devel kf6-kwindowsystem-devel qt6-base-devel` |
@@ -49,23 +49,35 @@ git clone https://github.com/yclee126/dolphin-paste-fixer
 cd dolphin-paste-fixer
 ```
 
+**Arch Linux** — use the Arch installer, which also sets up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Make sure the cloned repo sits on a permanent location before running it, as the hook needs to find the source directory on every KWin upgrade:
+
+```bash
+./install-arch.sh
+```
+
+**Other distros** — one-time install:
+
 ```bash
 ./install.sh
 ```
 
 Then log out and log back in.
 
-**Arch Linux** — use `./install-arch.sh` instead. It does the same build and install, and additionally sets up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Clone the repo to a permanent location before running it, as the hook needs to find the source directory on every future upgrade.
-
 ## Uninstalling
+
+**Arch Linux:**
+
+```bash
+./uninstall-arch.sh
+```
+
+**Other distros:**
 
 ```bash
 ./uninstall.sh
 ```
 
 Then log out and log back in.
-
-**Arch Linux** — use `./uninstall-arch.sh` instead to also remove the pacman hook.
 
 ## Verifying it works
 
