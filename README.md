@@ -49,33 +49,21 @@ git clone https://github.com/yclee126/dolphin-paste-fixer
 cd dolphin-paste-fixer
 ```
 
-**Arch Linux** — use the Arch installer, which also sets up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Clone the repo to a permanent location before running it, as the hook needs to find the source directory on every KWin upgrade:
-
-```bash
-./install-arch.sh
-```
-
-**Other distros** — one-time install:
-
 ```bash
 ./install.sh
 ```
 
 Then log out and log back in.
 
+**Arch Linux** — use `./install-arch.sh` instead. It does the same build and install, and additionally sets up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Clone the repo to a permanent location before running it, as the hook needs to find the source directory on every future upgrade.
+
 ## Uninstalling
-
-**Arch Linux:**
-
-```bash
-./uninstall-arch.sh
-```
-
-**Other distros:**
 
 ```bash
 ./uninstall.sh
 ```
+
+**Arch Linux** — use `./uninstall-arch.sh` instead to also remove the pacman hook.
 
 Then log out and log back in.
 
@@ -104,9 +92,9 @@ Run `./toggle-debug.sh` again to turn logging off.
 
 KWin requires all plugins to embed its minor version in their plugin ID (e.g. `org.kde.kwin.PluginFactoryInterface6.6.4`). This is enforced by KWin itself — it uses private, unstable headers that can change between minor versions, so without any safeguards it could cause a system crash.
 
-**Arch Linux:** the pacman hook installed by `install-arch.sh` rebuilds and reinstalls the plugin automatically as part of every `pacman -Syu` that upgrades KWin. No manual step needed; just log out and back in afterward.
+Rebuild and reinstall by running `./install.sh` again, then log out and back in.
 
-**Other distros:** rebuild and reinstall manually by running `./install.sh` again, then log out and back in.
+**Arch Linux:** if you installed with `./install-arch.sh`, the pacman hook handles this automatically on every `pacman -Syu`. Just log out and back in afterward.
 
 ## How it works
 
