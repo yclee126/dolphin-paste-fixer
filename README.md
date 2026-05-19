@@ -4,7 +4,7 @@ A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes clipboard paste in
 
 ## The problem
 
-When a popup opens inside Dolphin (such as the new folder dialog), Ctrl+V fails to paste even though you copied something beforehand. To paste, you have to copy the content again. This is a Dolphin bug where it loses track of the clipboard when a popup opens.
+When a popup opens inside Dolphin (such as the new folder dialog), Ctrl+V always fails to paste even though you copied something. This is a Dolphin bug where it loses track of the clipboard on popup open.
 
 Related bug tickets:
 
