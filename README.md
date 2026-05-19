@@ -74,20 +74,6 @@ Then log out and log back in.
 3. Press Ctrl+V in the name field.
 4. The text pastes.
 
-## Debug logging
-
-```bash
-./toggle-debug.sh
-```
-
-Log out and back in, then watch the output:
-
-```bash
-journalctl --user _COMM=kwin_wayland -f | grep dolphinpastefixer
-```
-
-Run `./toggle-debug.sh` again to turn logging off.
-
 ## After KWin upgrades
 
 KWin requires all plugins to embed its minor version in their plugin ID (e.g. `org.kde.kwin.PluginFactoryInterface6.6.4`). This is enforced by KWin itself — it uses private, unstable headers that can change between minor versions, so without any safeguards it could cause a system crash.
