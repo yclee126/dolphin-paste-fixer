@@ -1,0 +1,16 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "yclee126@gmail.com",
+                "Name": "yclee126"
+            }
+        ],
+        "Description": "Workaround for the KDE Plasma 6 Wayland Dolphin bug where Ctrl+V fails to act on the first clipboard item until the clipboard has been re-armed.",
+        "EnabledByDefault": true,
+        "License": "GPL-2.0+",
+        "Name": "Dolphin Paste Fixer",
+        "Version": "0.1.0",
+        "Website": "https://github.com/yclee126/dolphin-paste-fixer"
+    }
+}
