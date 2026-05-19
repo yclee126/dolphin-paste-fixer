@@ -63,9 +63,9 @@ Then log out and log back in.
 ./uninstall.sh
 ```
 
-**Arch Linux** — use `./uninstall-arch.sh` instead to also remove the pacman hook.
-
 Then log out and log back in.
+
+**Arch Linux** — use `./uninstall-arch.sh` instead to also remove the pacman hook.
 
 ## Verifying it works
 
