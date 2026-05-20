@@ -9,14 +9,6 @@
 
 Q_LOGGING_CATEGORY(LOG_DPF, "kwin.dolphinpastefixer", QtWarningMsg)
 
-namespace
-{
-bool matchesDolphin(const QString &resourceClass)
-{
-    return resourceClass.compare(QLatin1String("org.kde.dolphin"), Qt::CaseInsensitive) == 0;
-}
-} // namespace
-
 DolphinPopupObserver::DolphinPopupObserver()
 {
     auto *server = KWin::waylandServer();
@@ -50,18 +42,12 @@ void DolphinPopupObserver::onFocusedKeyboardSurfaceAboutToChange(KWin::SurfaceIn
     if (!window || !window->isPopupWindow()) {
         return;
     }
-    auto *parent = window->transientFor();
-    if (!parent || !matchesDolphin(parent->resourceClass())) {
-        return;
-    }
 
-    qCDebug(LOG_DPF) << "Dolphin popup gaining focus; queueing clipboard refresh";
-    // The signal fires *before* KWin updates focusedKeyboardSurface(), so we
-    // can't toggle the data-device surface synchronously here - the current
-    // focused surface is still the parent toplevel. A queued invocation runs
-    // after KWin finishes the focus change, at which point
-    // seat->focusedKeyboardSurface() is the popup and the toggle re-delivers
-    // wl_data_offer to it.
+    qCDebug(LOG_DPF) << "Popup gaining focus; queueing clipboard refresh"
+                     << "(app=" << window->resourceClass()
+                     << "pid=" << window->pid() << ")";
+    // Queued: the signal fires before KWin updates focusedKeyboardSurface(),
+    // so a synchronous call here would re-deliver to the old surface.
     QMetaObject::invokeMethod(this, &DolphinPopupObserver::refreshClipboard, Qt::QueuedConnection);
 }
 
@@ -85,13 +71,11 @@ void DolphinPopupObserver::refreshClipboard()
         return;
     }
 
-    // Toggle the seat's data-device focus surface (separate from keyboard
-    // focus) to force re-delivery of wl_data_offer for the current selection.
-    // setFocusedDataDeviceSurface only touches the wl_data_device protocol
-    // stream, so Qt's shortcut/focus widgets are untouched. We do not call
-    // setSelection(nullptr, ...) - that causes Plasma's clipboard manager to
-    // record a spurious empty entry; and setSelection(currentSource, newSerial)
-    // on its own short-circuits and does nothing.
+    // Do not use setFocusedKeyboardSurface - triggers Qt to rebuild QShortcutMap,
+    // causing Ctrl+V to be reported as ambiguous.
+    // Do not use setSelection(nullptr, ...) - records a spurious empty entry in
+    // Plasma's clipboard manager. setSelection(currentSource, serial) alone
+    // short-circuits and does nothing.
     qCDebug(LOG_DPF) << "Re-delivering selection via data-device focus toggle (surface=" << focused << ")";
     seat->setFocusedDataDeviceSurface(nullptr);
     seat->setFocusedDataDeviceSurface(focused);

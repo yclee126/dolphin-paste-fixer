@@ -1,20 +1,22 @@
 # dolphin-paste-fixer
 
-A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes clipboard paste in Dolphin popups. It runs entirely inside KWin as a single shared library so it's very lightweight.
+A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes a clipboard bug in Dolphin and other Qt apps triggered by nested context menus. It runs entirely inside KWin as a single shared library so it's very lightweight.
 
-## The problem
+## Details
 
-When a popup opens inside Dolphin (such as the new folder dialog), Ctrl+V always fails to paste even though you copied something. This is a Dolphin bug where it loses track of the clipboard on popup open.
+After opening the new folder dialog in Dolphin, Ctrl+V fails to paste any text. Originally it was thought of a popup triggered problem, but turns out it was caused by nested context menus.
 
-Related bug tickets:
+From the comments posted by David Edmundson in [#516263](https://bugs.kde.org/show_bug.cgi?id=516263#c7), it's a communication error between KWin and Qt, which results in Dolphin throwing away the clipboard content.
+
+This plugin detects focus change between context menu popups and re-delivers the clipboard content. This is queued in the event queue, so at the end it receives the clipboard content, restoring the paste functionallity. The manual equivalent is pressing Super+V to pop up the clipboard manager and selecting the top item.
+
+While testing the context menus I found other Qt apps with nested context menus had the same bug so I removed the Dolphin window filter. For example, right-click on the desktop and select the new folder menu, you can't paste the text. It sometimes doesn't trigger the bug though, only Dolphin is the reilable app that triggers it. The plugin itself hardly adds any overhead to the system so triggering on every context menus won't do any harm.
+
+Relevant bug tickets:
 
 - Can't paste text to the new folder dialog [#516263](https://bugs.kde.org/show_bug.cgi?id=516263) [#517780](https://bugs.kde.org/show_bug.cgi?id=517780)
 - Can't paste text to the new file dialog [#519034](https://bugs.kde.org/show_bug.cgi?id=519034)
 - Can't paste files after creating a new folder in another window [#519770](https://bugs.kde.org/show_bug.cgi?id=519770)
-
-## The fix
-
-This plugin detects new Dolphin popup by watching the Wayland seat for keyboard focus moving to it. When that happens it silently re-delivers the current clipboard offer to the popup, restoring paste instantly. The manual equivalent is pressing Super+V to pop up the clipboard manager and selecting the top item.
 
 ## Requirements
 
@@ -94,11 +96,11 @@ Rebuild and reinstall by running `./install.sh` again, then log out and back in.
 
 **Arch Linux:** if you installed with `./install-arch.sh`, the pacman hook handles this automatically on every `pacman -Syu`. Just log out and back in afterward.
 
-## How it works
+## How it works (technical)
 
-`DolphinPopupObserver` subscribes to `KWin::SeatInterface::focusedKeyboardSurfaceAboutToChange`. When focus is about to move to a popup whose parent toplevel is `org.kde.dolphin`, it queues a call (via `Qt::QueuedConnection`) to toggle `seat->setFocusedDataDeviceSurface()` — first to `nullptr`, then back to the popup's surface. This causes the compositor to re-emit `wl_data_offer` on Dolphin's `wl_data_device` stream, restoring clipboard state naturally.
+`DolphinPopupObserver` subscribes to `KWin::SeatInterface::focusedKeyboardSurfaceAboutToChange`. On every focus transition it queues a call (via `Qt::QueuedConnection`) to toggle `seat->setFocusedDataDeviceSurface()` — first to `nullptr`, then back to the now-focused surface. Because `wl_data_device` is per-client, this causes the compositor to re-emit `wl_data_offer` on the focused app's data device stream.
 
-The queued dispatch is essential: the signal fires *before* KWin updates `focusedKeyboardSurface()`, so toggling synchronously would re-deliver to the old surface. Running one event-loop turn later guarantees the new surface is already focused.
+The queued dispatch is essential: `focusedKeyboardSurfaceAboutToChange` fires *before* KWin updates `focusedKeyboardSurface()`, so toggling synchronously would re-deliver to the old surface. Running one event-loop turn later guarantees the new surface is already focused.
 
 ## License
 

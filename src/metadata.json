@@ -10,7 +10,7 @@
         "EnabledByDefault": true,
         "License": "GPL-2.0+",
         "Name": "Dolphin Paste Fixer",
-        "Version": "0.1.0",
+        "Version": "0.2.0",
         "Website": "https://github.com/yclee126/dolphin-paste-fixer"
     }
 }
