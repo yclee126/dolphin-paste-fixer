@@ -51,14 +51,6 @@ git clone https://github.com/yclee126/dolphin-paste-fixer
 cd dolphin-paste-fixer
 ```
 
-**Arch Linux** — use the Arch installer, which also sets up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Make sure the cloned repo sits on a permanent location before running it, as the hook needs to find the source directory on every KWin upgrade:
-
-```bash
-./install-arch.sh
-```
-
-**Other distros** — one-time install:
-
 ```bash
 ./install.sh
 ```
@@ -67,19 +59,15 @@ Then log out and log back in.
 
 ## Uninstalling
 
-**Arch Linux:**
-
-```bash
-./uninstall-arch.sh
-```
-
-**Other distros:**
-
 ```bash
 ./uninstall.sh
 ```
 
 Then log out and log back in.
+
+## Arch Linux
+
+Automated build scripts are available. (`install-arch.sh` / `uninstall-arch.sh`) They additionally set up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Since the bug's getting some attention it might get fixed in the next release so I placed this section at the end. You can use the standard scripts just fine.
 
 ## Verifying it works
 
