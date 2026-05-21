@@ -1,20 +1,22 @@
 # dolphin-paste-fixer
 
-A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes a clipboard bug in Dolphin and other Qt apps triggered by nested context menus. It runs entirely inside KWin as a single shared library so it's very lightweight.
+**Note:** As of May 21 the relevant bugfix is active on [The Qt Project](https://codereview.qt-project.org/c/qt/qtbase/+/737101), so please check if it's fixed in the latest Qt library before installing this fix.
 
-As of May 21 the relevant bugfix is active on [The Qt Project](https://codereview.qt-project.org/c/qt/qtbase/+/737101), so you may just wait and install the updated library later.
+A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes a bug in Dolphin where you can't paste text or files after opening a new folder dialog through the context menu. It watches for context menu popups and re-arms the clipboard afterward. The fix also applies to other Qt apps with nested context menus.
 
 ## The problem
 
 After opening the new folder dialog in Dolphin, Ctrl+V fails to paste any text. Originally it was thought of a popup triggered problem, but turns out it was caused by nested context menus.
 
-From the comments posted by David Edmundson in [#516263](https://bugs.kde.org/show_bug.cgi?id=516263#c7), it's a communication error between KWin and Qt, which results in Dolphin throwing away the clipboard content.
+From the comments posted by David Edmundson in [#516263](https://bugs.kde.org/show_bug.cgi?id=516263#c7), it's a communication error between KWin and Qt, which results in Dolphin throwing away the clipboard content after the context menu gets closed.
 
 ## The fix
 
-This plugin detects focus change between context menu popups and re-delivers the clipboard content. This is queued in the event queue, so at the end it receives the clipboard content, restoring the paste functionallity. The manual equivalent is pressing Super+V to pop up the clipboard manager and selecting the top item.
+This plugin detects focus change between popups which includes context menus and re-delivers the clipboard content. This is queued in the event queue, so at the end it receives the clipboard content, restoring the paste functionality. The manual equivalent is pressing Super+V to pop up the clipboard manager and selecting the top item.
 
-While testing the context menus I found other Qt apps with nested context menus had the same bug so I removed the Dolphin window filter. For example, right-click on the desktop and select the new folder menu, you can't paste the text. It sometimes doesn't trigger the bug though, only Dolphin is the reilable app that triggers it. The plugin itself hardly adds any overhead to the system so triggering on every context menus won't do any harm.
+Since the bug affects other Qt apps it detects such popups system-wide. The code hardly generates any overhead so you won't notice anything.
+
+(Just a dev footnote: The code was actually written to detect the new folder dialog, but it just so happens that it detected the context menu re-gaining focus shortly after the child context menu closed, creating the illusion. If it works then it works I guess.)
 
 ## Related bugs
 
@@ -71,7 +73,7 @@ Then log out and log back in.
 
 ## Arch Linux
 
-Automated build scripts are available. (`install-arch.sh` / `uninstall-arch.sh`) They additionally set up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Since the bug's getting some attention it might get fixed in the next release so I placed this section at the end. You can use the standard scripts just fine.
+Automated build scripts are available. (`install-arch.sh` / `uninstall-arch.sh`) They additionally set up a pacman hook that rebuilds the plugin automatically after every KWin upgrade. Since the bugfix is active it might get fixed in the next release so I placed this section at the end. You can use the standard scripts just fine.
 
 ## Verifying it works
 
