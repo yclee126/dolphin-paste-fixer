@@ -2,6 +2,8 @@
 
 ## Enable debug logging
 
+Log lines are emitted at QtWarningMsg level so they are silent by default. You can enable them by adding a new Qt logging rule.
+
 Add the following line under the `[Rules]` section of `~/.config/QtProject/qtlogging.ini`:
 
 ```
@@ -24,8 +26,6 @@ Log out and back in for the change to take effect.
 ```bash
 journalctl --user _COMM=kwin_wayland -f
 ```
-
-Log lines are emitted at `QtWarningMsg` level, so they are silent by default and only appear when the rule above is active.
 
 ## Disable debug logging
 
