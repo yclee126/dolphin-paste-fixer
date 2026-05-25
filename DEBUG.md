@@ -22,7 +22,7 @@ Log out and back in for the change to take effect.
 ## Watch the output
 
 ```bash
-journalctl --user _COMM=kwin_wayland -f | grep dolphinpastefixer
+journalctl --user _COMM=kwin_wayland -f
 ```
 
 Log lines are emitted at `QtWarningMsg` level, so they are silent by default and only appear when the rule above is active.
