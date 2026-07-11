@@ -1,6 +1,6 @@
 # dolphin-paste-fixer
 
-**Note:** As of May 21 the relevant bugfix is active on [The Qt Project](https://codereview.qt-project.org/c/qt/qtbase/+/737101), so please check if it's fixed in the latest Qt library before installing this fix.
+**Note:** The relevant bugfix has been merged on [The Qt Project](https://codereview.qt-project.org/c/qt/qtbase/+/737101) and it will be shipped with Qt 6.11.2.(release scheduled on August 13, 2026) Please install the fixed Qt version over installing this fix.
 
 A small C++ KWin plugin for KDE Plasma 6 (Wayland) that fixes a bug in Dolphin where you can't paste text or files after opening a new folder dialog through the context menu. It watches for context menu popups and re-arms the clipboard afterward. The fix also applies to other Qt apps with nested context menus.
 
@@ -63,6 +63,8 @@ cd dolphin-paste-fixer
 
 Then log out and log back in.
 
+Note that you'll have to install it again after each KWin upgrade. (also happens on Kubuntu LTS version)
+
 ## Uninstalling
 
 ```bash
@@ -81,14 +83,6 @@ Automated build scripts are available. (`install-arch.sh` / `uninstall-arch.sh`)
 2. Pop up the new folder dialog in Dolphin. (right-click > Create New > Folder...)
 3. Press Ctrl+V in the name field.
 4. The text pastes.
-
-## After KWin upgrades
-
-KWin requires all plugins to embed its minor version in their plugin ID (e.g. `org.kde.kwin.PluginFactoryInterface6.6.4`). This is enforced by KWin itself — it uses private, unstable headers that can change between minor versions, so without any safeguards it could cause a system crash.
-
-Rebuild and reinstall by running `./install.sh` again, then log out and back in.
-
-**Arch Linux:** if you installed with `./install-arch.sh`, the pacman hook handles this automatically on every `pacman -Syu`. Just log out and back in afterward.
 
 ## How it works (technical)
 
