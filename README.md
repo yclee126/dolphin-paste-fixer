@@ -27,7 +27,7 @@ Since the bug affects other Qt apps it detects such popups system-wide. The code
 ## Requirements
 
 - KDE Plasma 6 on Wayland
-- KWin 6.x (shipped with Plasma 6)
+- KWin >= 6.6.0 (needs `setFocusedDataDeviceSurface`)
 
 ## Tested on
 
